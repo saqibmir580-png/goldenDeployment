@@ -6,13 +6,8 @@ services:
     repo: https://github.com/saqibmir580-png/goldenDeployment
     region: oregon
     plan: free
-    rootDir: ./goldenease_backend
-    buildFilter:
-      paths:
-      - goldenease_backend/**
-    clearCache: true
-    buildCommand: "cd goldenease_backend && pip install -r requirements.txt"
-    startCommand: "uvicorn main:app --host 0.0.0.0 --port $PORT"
+    buildCommand: "pip install -r goldenease_backend/requirements.txt"
+    startCommand: "uvicorn goldenease_backend.main:app --host 0.0.0.0 --port $PORT"
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.0
