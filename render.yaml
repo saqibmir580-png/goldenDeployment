@@ -1,0 +1,39 @@
+services:
+  # Backend Service (FastAPI)
+  - type: web
+    name: document-validation-backend
+    env: python
+    repo: https://github.com/saqibmir580-png/goldenDeployment
+    region: oregon
+    plan: free
+    rootDir: ./goldenease_backend
+    buildFilter:
+      paths:
+      - goldenease_backend/**
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "uvicorn main:app --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: SECRET_KEY
+        generateValue: true # Automatically generates a secure secret key
+      - key: DATABASE_URL
+        value: sqlite:///./docverifier.db
+
+  # Frontend Service (React Static Site)
+  - type: static
+    name: document-validation-frontend
+    repo: https://github.com/saqibmir580-png/goldenDeployment
+    region: oregon
+    plan: free
+    rootDir: ./goldenease_frontend
+    buildFilter:
+      paths:
+      - goldenease_frontend/**
+    buildCommand: "npm install && npm run build"
+    publishDir: "dist"
+    # Add rewrite rules for single-page applications
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
