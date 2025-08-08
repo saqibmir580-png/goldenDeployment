@@ -27,10 +27,18 @@ class User(BaseModel):
     is_verified: bool
     gender: str | None = None
     role: str | None = None
+    status: str
     created_at: datetime
 
     class Config:
         orm_mode = True
+
+class UserUpdate(BaseModel):
+    name: Optional[str] = None
+    email: Optional[str] = None
+    contact_number: Optional[str] = None
+    status: Optional[str] = None
+
 
 class Token(BaseModel):
     access_token: str

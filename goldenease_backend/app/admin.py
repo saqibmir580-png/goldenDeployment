@@ -185,6 +185,20 @@ def get_user_by_id(user_id: int, db: Session = Depends(database.get_db)):
         raise HTTPException(status_code=404, detail="User not found")
     return user
 
+@router.put("/users/{user_id}", response_model=schemas.User)
+def update_user_details(user_id: int, user_update: schemas.UserUpdate, db: Session = Depends(database.get_db)):
+    user = db.query(models.User).filter(models.User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    update_data = user_update.dict(exclude_unset=True)
+    for key, value in update_data.items():
+        setattr(user, key, value)
+
+    db.commit()
+    db.refresh(user)
+    return user
+
 @router.post("/users/{user_id}/verify-documents")
 def verify_user_documents_sequentially(user_id: int, db: Session = Depends(database.get_db)):
     user = db.query(models.User).filter(models.User.id == user_id).first()
